@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Shell32;
 using IWshRuntimeLibrary;
 
@@ -61,26 +61,19 @@ namespace softwareRegister
         // that were made.
         // 
         // This can be tracked based upon development of the JSON file class to be made.
-
+        
         private bool CreateShortcut(string targetLocationPath)
         {
-            try
+            var wsh = new IWshShell_Class();
+            if (wsh.CreateShortcut(PathLink:
+                Environment.GetFolderPath(Environment.SpecialFolder.StartMenu)
+                + "\\" + GetExecutableFileName() + ".lnk") is IWshShortcut shortcut)
             {
-                var wsh = new IWshShell_Class();
-                if (wsh.CreateShortcut(PathLink: 
-                    Environment.GetFolderPath(Environment.SpecialFolder.StartMenu) 
-                    + "\\" + GetExecutableFileName() + ".lnk") is IWshShortcut shortcut)
-                {
-                    shortcut.TargetPath = GetObjectExecutableLocation();
-                    shortcut.Save();
-                }
-
+                shortcut.TargetPath = GetObjectExecutableLocation();
+                shortcut.Save();
                 return true;
             }
-            catch (Exception e)
-            {
-                return false;
-            }
+            return false;
         }
         
         public bool RegisterInWindows()
