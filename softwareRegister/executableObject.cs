@@ -1,6 +1,8 @@
 using System;
 using Shell32;
+using System.IO;
 using IWshRuntimeLibrary;
+using File = System.IO.File;
 
 
 // okay so rewrite the code to create a object that contains
@@ -8,8 +10,7 @@ using IWshRuntimeLibrary;
 // it creates shortscuts to the exe in the right places for windows to search.
 // also look into %programdata%
 namespace softwareRegister
-{   
-
+{
     /// <summary>
     ///  This class holds the executable object methods to
     ///  register the file executable in the Windows and
@@ -52,7 +53,7 @@ namespace softwareRegister
             this._executablePath = executablePath;
             this._fileName = fileName;
         }
-        
+
         // Note to self
         // ---
         // A additional problem that might occur is if the exe is missing from the locations and
@@ -61,21 +62,49 @@ namespace softwareRegister
         // that were made.
         // 
         // This can be tracked based upon development of the JSON file class to be made.
-        
-        private bool CreateShortcut(string targetLocationPath)
+
+        /// <summary>
+        /// Creates a shortcut in Windows.
+        /// </summary>
+        /// <param name="specialFolder">Location to be saved in.</param>
+        /// <param name="targetLocationPath">Location where shortcut will be saved in.</param>
+        /// <returns>false == failed, true == success</returns>
+        private protected bool CreateShortcut(Environment.SpecialFolder specialFolder, string targetLocationPath)
         {
             var wsh = new IWshShell_Class();
             if (wsh.CreateShortcut(PathLink:
-                Environment.GetFolderPath(Environment.SpecialFolder.StartMenu)
+                Environment.GetFolderPath(specialFolder)
                 + "\\" + GetExecutableFileName() + ".lnk") is IWshShortcut shortcut)
             {
                 shortcut.TargetPath = GetObjectExecutableLocation();
                 shortcut.Save();
                 return true;
             }
+
             return false;
         }
-        
+
+        private protected bool DeleteShortcut(string targetShortcutPath)
+        {
+            try
+            {
+                // Check if file exists with its full path    
+                if (File.Exists(targetShortcutPath))
+                {
+                    // If file found, delete it    
+                    File.Delete(targetShortcutPath);
+                    return true;
+                }
+                return false;
+            }
+            // Should really be catching and finding what the exception is and address it 
+            // from there. :3 *hover over the file.delete*
+            catch
+            {
+                return false;
+            }
+        }
+
         public bool RegisterInWindows()
         {
             // Access the registry 
@@ -85,8 +114,8 @@ namespace softwareRegister
             // key.SetValue("value", 180);
             // key.Close(); 
             return false;
-        } 
-        
+        }
+
         public bool DeregisterInWindows()
         {
             // check the file containing the data regarding registry edits.
@@ -97,6 +126,6 @@ namespace softwareRegister
             //     int value = int.Parse(key.GetValue("value").ToString());  
             // } 
             return false;
-        } 
+        }
     }
 }
