@@ -84,18 +84,19 @@ namespace softwareRegister
             return false;
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="targetShortcutPath"></param>
+        /// <returns></returns>
         private protected bool DeleteShortcut(string targetShortcutPath)
         {
             try
             {
                 // Check if file exists with its full path    
-                if (File.Exists(targetShortcutPath))
-                {
-                    // If file found, delete it    
-                    File.Delete(targetShortcutPath);
-                    return true;
-                }
-                return false;
+                if (!File.Exists(targetShortcutPath)) return false;
+                File.Delete(targetShortcutPath);
+                return true;
             }
             // Should really be catching and finding what the exception is and address it 
             // from there. :3 *hover over the file.delete*
