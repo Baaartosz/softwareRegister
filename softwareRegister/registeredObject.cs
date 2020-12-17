@@ -38,7 +38,7 @@ namespace softwareRegister
         /// Constructor, set the executablePath and fileName
         /// </summary>
         /// <param name="executablePath">The executable path</param>
-        /// <param name="fileName">the executable full name</param>
+        /// <param name="fileName">The executable full name</param>
         public RegisteredObject(string executablePath, string fileName)
         {
             this._executablePath = executablePath;
@@ -47,6 +47,9 @@ namespace softwareRegister
         
         public bool RegisterObjectInRegistry(string fileLocation)
         {
+            // Access the registry 
+            // add all necessary keys into the registry to find the applcation
+            // and index it in the 
             return false;
         } 
         
