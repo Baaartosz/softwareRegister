@@ -21,6 +21,7 @@
           <e p="Resources.Designer.cs" t="Include" />
           <e p="Resources.resx" t="Include" />
         </e>
+        <e p="registeredObject.cs" t="Include" />
         <e p="softwareRegister.csproj" t="IncludeRecursive" />
       </e>
       <e p="softwareRegister.sln" t="IncludeFlat" />

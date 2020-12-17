@@ -5,8 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:softwareRegister"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="softwareRegister" Height="150" Width="700">
     <Grid>
-        
+        <!-- add a theme to the application -->
+        <Label x:Name="FilenameDisplay" Content="hello this is a bit of text" HorizontalAlignment="Center"
+               VerticalAlignment="Center" FontSize="12"></Label>
+        <Button Content="Find Executable" HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="Button_OnClick" />
+        <Button Content="Register" Click="Button_OnClick1" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
     </Grid>
 </Window>
+
