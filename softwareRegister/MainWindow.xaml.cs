@@ -54,21 +54,15 @@ namespace softwareRegister
             {
                 
                 // Open document 
-                string filename = openFileDialog.FileName;
+                var filename = openFileDialog.FileName;
                 FilenameDisplay.Content = filename;
-                
-                _currentExecutable = new ExecutableObject(openFileDialog.FileName,openFileDialog.Title);
+                _currentExecutable = new ExecutableObject(openFileDialog.FileName,openFileDialog.SafeFileName);
             }
         }
 
         private void RegisterButton_onClick(object sender, RoutedEventArgs e)
         {
-            WriteLine("r btn pressed");
-            if (_currentExecutable.RegisterInWindows())
-            {
-                WriteLine(@"Registration Triggered");
-            }
-            _currentExecutable.DeregisterInWindows();
+            _currentExecutable.RegisterInWindows();
         }
     }
 }

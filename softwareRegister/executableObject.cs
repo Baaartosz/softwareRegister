@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using IWshRuntimeLibrary;
 using System.Text.Json;
@@ -28,10 +29,10 @@ namespace softwareRegister
         private string _executablePath;
         private string _fileName;
         private bool _isRegistered = false;
+        private string _softwareFolderName = "SoftwareReg";
+        private static string _dataFolderPath;
         private List<string> _modfiedLocations = new List<string>();
         
-        private const string TestPath = "C:\\Projects\\softwareRegister\\softwareRegister\\";
-
         /// <summary>
         /// Uses a ?? operator that basically means that it will try to get the
         /// primary property and if it returns null then it will use the backup
@@ -44,7 +45,7 @@ namespace softwareRegister
         /// <returns>String executablePath</returns>
         private string GetObjectExecutableLocation() => _executablePath ?? "Executable location unset.";
 
-        private string GetExecutableFileName() => _fileName ?? "Executable name unset";
+        //private string GetExecutableFileName() => _fileName ?? "Executable name unset";
 
         private bool GetIfRegistered() => _isRegistered;
 
@@ -59,6 +60,11 @@ namespace softwareRegister
         {
             _executablePath = executablePath;
             _fileName = fileName;
+            _dataFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), _softwareFolderName);
+            MessageBox.Show(_dataFolderPath);
+            Directory.CreateDirectory(_dataFolderPath);
+            //NOTE TO SELF
+            // Create a sepererate constructor for attmpting to find if it already exsists if not create new object.
         }
 
         // This can be tracked based upon development of the JSON file class to be made.
@@ -66,7 +72,7 @@ namespace softwareRegister
         {
             var exeObject = new ExeObjectSeralised()
             {
-                ExecutableName = GetExecutableFileName(),
+                ExecutableName = _fileName,
                 ExecutablePath = GetObjectExecutableLocation(),
                 IsRegistered = GetIfRegistered(),
                 ModfiedLocations = GetModfiedLocations(),
@@ -78,15 +84,12 @@ namespace softwareRegister
                 WriteIndented = true,
             };
             var jsonString = JsonSerializer.Serialize(exeObject, options);
-            File.WriteAllText(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
-                              + "\\" + GetExecutableFileName() + ".sr", jsonString);
+            File.WriteAllText(_dataFolderPath + "\\" + _fileName + ".sr", jsonString);
         }
 
         private void GetSaveFromAppdata()
         {
-            var currentJson = File.ReadAllText(File.ReadAllText(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
-                + "\\" + GetExecutableFileName() + ".sr"));
+            var currentJson = File.ReadAllText(_dataFolderPath + "\\" + _fileName + ".sr");
             var executableObject = JsonSerializer.Deserialize<ExeObjectSeralised>(currentJson);
 
             if (executableObject == null || DateTime.Compare(DateTime.Now, executableObject.TimeMade) < 0) return;
@@ -112,21 +115,24 @@ namespace softwareRegister
                     var wsh = new IWshShell_Class();
                     if (wsh.CreateShortcut(PathLink:
                         Environment.GetFolderPath(specialFolder)
-                        + "\\" + GetExecutableFileName() + ".lnk") is IWshShortcut shortcut)
+                        + "\\" + _fileName + ".lnk") is IWshShortcut shortcut)
                     {
-                        shortcut.TargetPath = GetObjectExecutableLocation();
+                        shortcut.TargetPath = shortcutTargetLocationPath;
                         shortcut.Save();
-                        return true;
+                        _isRegistered = true;
+                        SaveToAppdata();
                     }
                 }
-
-                return false;
+                if (_isRegistered)
+                {
+                    return true;
+                }
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message);
-                return false;
             }
+            return false;
         }
 
         /// <summary>
@@ -142,6 +148,7 @@ namespace softwareRegister
                 if (!File.Exists(targetShortcutPath)) return false;
                 File.Delete(targetShortcutPath);
                 _modfiedLocations.Remove(targetShortcutPath);
+                SaveToAppdata();
                 return true;
             }
             // Should really be catching and finding what the exception is and address it 
@@ -161,19 +168,21 @@ namespace softwareRegister
             Environment.SpecialFolder.StartMenu
         };
 
-        internal bool RegisterInWindows()
+        public void RegisterInWindows()
         {
             // Go through a array and add the shortcut to those folders.
             for (var index = 0; index < _folders.Length; index++)
             {
                 var f = _folders[index];
-                if (!CreateShortcut(f, GetObjectExecutableLocation())) continue;
-                var finalLocation = Environment.GetFolderPath(f) + "\\" + GetExecutableFileName() + ".lnk";
-                _modfiedLocations.Add(finalLocation);
-                if (index == _folders.Length - 1) return true;
+                if (CreateShortcut(f, _executablePath))
+                {
+                    var finalLocation = Environment.GetFolderPath(f) + "\\" + _fileName + ".lnk";
+                    _modfiedLocations.Add(finalLocation); // it works to here fine, in both locations
+                    MessageBox.Show(_modfiedLocations[index]);
+                    SaveToAppdata();
+                } else
+                    MessageBox.Show($"Operation failed : {_fileName}");
             }
-
-            return false;
         }
 
         internal bool DeregisterInWindows()
