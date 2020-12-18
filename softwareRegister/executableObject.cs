@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using IWshRuntimeLibrary;
 using System.Text.Json;
+using System.Windows;
 using File = System.IO.File;
 
 // okay so rewrite the code to create a object that contains
@@ -27,8 +28,9 @@ namespace softwareRegister
         private string _executablePath;
         private string _fileName;
         private bool _isRegistered = false;
-        private const string TestPath = "C:\\Projects\\softwareRegister\\softwareRegister\\";
         private List<string> _modfiedLocations = new List<string>();
+        
+        private const string TestPath = "C:\\Projects\\softwareRegister\\softwareRegister\\";
 
         /// <summary>
         /// Uses a ?? operator that basically means that it will try to get the
@@ -46,7 +48,7 @@ namespace softwareRegister
 
         private bool GetIfRegistered() => _isRegistered;
 
-        public List<string> GetModifedLocations() => _modfiedLocations;
+        private List<string> GetModfiedLocations() => _modfiedLocations;
 
         /// <summary>
         /// Constructor, set the executablePath and fileName
@@ -67,7 +69,7 @@ namespace softwareRegister
                 ExecutableName = GetExecutableFileName(),
                 ExecutablePath = GetObjectExecutableLocation(),
                 IsRegistered = GetIfRegistered(),
-                ModfiedLocations = GetModifedLocations(),
+                ModfiedLocations = GetModfiedLocations(),
                 TimeMade = DateTime.Now
             };
 
@@ -103,19 +105,28 @@ namespace softwareRegister
         /// <returns>false == failed, true == success</returns>
         private bool CreateShortcut(Environment.SpecialFolder specialFolder, string shortcutTargetLocationPath)
         {
-            if (!_isRegistered)
+            try
             {
-                var wsh = new IWshShell_Class();
-                if (wsh.CreateShortcut(PathLink:
-                    Environment.GetFolderPath(specialFolder)
-                    + "\\" + GetExecutableFileName() + ".lnk") is IWshShortcut shortcut)
+                if (!_isRegistered)
                 {
-                    shortcut.TargetPath = GetObjectExecutableLocation();
-                    shortcut.Save();
-                    return true;
+                    var wsh = new IWshShell_Class();
+                    if (wsh.CreateShortcut(PathLink:
+                        Environment.GetFolderPath(specialFolder)
+                        + "\\" + GetExecutableFileName() + ".lnk") is IWshShortcut shortcut)
+                    {
+                        shortcut.TargetPath = GetObjectExecutableLocation();
+                        shortcut.Save();
+                        return true;
+                    }
                 }
+
+                return false;
             }
-            return false;
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+                return false;
+            }
         }
 
         /// <summary>
@@ -150,13 +161,13 @@ namespace softwareRegister
             Environment.SpecialFolder.StartMenu
         };
 
-        public bool RegisterInWindows()
+        internal bool RegisterInWindows()
         {
             // Go through a array and add the shortcut to those folders.
             for (var index = 0; index < _folders.Length; index++)
             {
                 var f = _folders[index];
-                if (!CreateShortcut(f, TestPath)) continue;
+                if (!CreateShortcut(f, GetObjectExecutableLocation())) continue;
                 var finalLocation = Environment.GetFolderPath(f) + "\\" + GetExecutableFileName() + ".lnk";
                 _modfiedLocations.Add(finalLocation);
                 if (index == _folders.Length - 1) return true;
@@ -165,7 +176,7 @@ namespace softwareRegister
             return false;
         }
 
-        public bool DeregisterInWindows()
+        internal bool DeregisterInWindows()
         {
             // Add a way to update the locations array before proceeding with the 
             // Foreach String in 'ModifiedLocations' Delete all.
