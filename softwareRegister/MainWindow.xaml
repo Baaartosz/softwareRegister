@@ -11,7 +11,7 @@
         <Label x:Name="FilenameDisplay" Content="hello this is a bit of text" HorizontalAlignment="Center"
                VerticalAlignment="Center" FontSize="12"></Label>
         <Button Content="Find Executable" HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="Button_OnClick" />
-        <Button Content="Register" Click="Button_OnClick1" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+        <Button x:Name="RegBtn" Content="Register" Click="RegisterButton_onClick" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
     </Grid>
 </Window>
 

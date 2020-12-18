@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Windows;
+using System.Windows.Media;
+using static System.Console;
 
 namespace softwareRegister
 {
@@ -34,6 +37,8 @@ namespace softwareRegister
         //
         // }
 
+        public static ExecutableObject _currentExecutable;
+        
         private void Button_OnClick(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
@@ -42,21 +47,28 @@ namespace softwareRegister
             openFileDialog.FilterIndex = 1;
             
             // Display OpenFileDialog by calling ShowDialog method 
-            Nullable<bool> result = openFileDialog.ShowDialog();
-        
-        
+            var result = openFileDialog.ShowDialog();
+            
             // Get the selected file name and display in a TextBox 
             if (result == true)
             {
+                
                 // Open document 
                 string filename = openFileDialog.FileName;
                 FilenameDisplay.Content = filename;
+                
+                _currentExecutable = new ExecutableObject(openFileDialog.FileName,openFileDialog.Title);
             }
         }
 
-        private void Button_OnClick1(object sender, RoutedEventArgs e)
+        private void RegisterButton_onClick(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            WriteLine("r btn pressed");
+            if (_currentExecutable.RegisterInWindows())
+            {
+                WriteLine(@"Registration Triggered");
+            }
+            _currentExecutable.DeregisterInWindows();
         }
     }
 }
