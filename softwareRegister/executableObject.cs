@@ -159,6 +159,10 @@ namespace softwareRegister
             }
         }
 
+        // TODO
+        // Needs to accept dynamic changes in the user interface from the
+        // tick boxes of possible places.
+        
         /// <summary>
         /// Holds a bunch of special folder to iterate through
         /// </summary>
@@ -171,30 +175,37 @@ namespace softwareRegister
         public void RegisterInWindows()
         {
             // Go through a array and add the shortcut to those folders.
-            for (var index = 0; index < _folders.Length; index++)
+            foreach (var f in _folders)
             {
-                var f = _folders[index];
                 if (CreateShortcut(f, _executablePath))
                 {
                     var finalLocation = Environment.GetFolderPath(f) + "\\" + _fileName + ".lnk";
-                    _modfiedLocations.Add(finalLocation); // it works to here fine, in both locations
-                    MessageBox.Show(_modfiedLocations[index]);
+                    _modfiedLocations.Add(finalLocation);
+                    MessageBox.Show($"Operation successful on {_fileName}");
                     SaveToAppdata();
                 } else
-                    MessageBox.Show($"Operation failed : {_fileName}");
+                    MessageBox.Show($"Operation failed on {_fileName}");
             }
         }
 
-        internal bool DeregisterInWindows()
+        public void DeregisterInWindows()
         {
             // Add a way to update the locations array before proceeding with the 
             // Foreach String in 'ModifiedLocations' Delete all.
-            return _modfiedLocations.Where(DeleteShortcut).Any();
+            GetSaveFromAppdata();
+            MessageBox.Show(_modfiedLocations.Where(DeleteShortcut).Any()
+                ? $"Operation successful : {_fileName}"
+                : $"Unregistering failed on {_fileName}");
         }
 
         public void Close()
         {
             SaveToAppdata();
+        }
+
+        private void CleanUp()
+        {
+            
         }
         
     }

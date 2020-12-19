@@ -23,21 +23,13 @@ namespace softwareRegister
             InitializeComponent();
         }
         
-        // private void button1_Click(object sender, RoutedEventArgs e)
-        // {
-        //     // Create OpenFileDialog 
-        //     Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-        //
-        //
-        //
-        //     // Set filter for file extension and default file extension 
-        //     dlg.DefaultExt = ".png";
-        //     dlg.Filter = "JPEG Files (*.jpeg)|*.jpeg|PNG Files (*.png)|*.png|JPG Files (*.jpg)|*.jpg|GIF Files (*.gif)|*.gif"; 
-        //
-        //
-        // }
+        // todo
+        // Improve on the UI
+        // Make it so the user can tick boxes for which places they want it to be saved in
+        // 
 
-        public static ExecutableObject _currentExecutable;
+
+        public static ExecutableObject CurrentExecutable;
         
         private void Button_OnClick(object sender, RoutedEventArgs e)
         {
@@ -56,13 +48,18 @@ namespace softwareRegister
                 // Open document 
                 var filename = openFileDialog.FileName;
                 FilenameDisplay.Content = filename;
-                _currentExecutable = new ExecutableObject(openFileDialog.FileName,openFileDialog.SafeFileName);
+                CurrentExecutable = new ExecutableObject(openFileDialog.FileName,openFileDialog.SafeFileName);
             }
         }
 
         private void RegisterButton_onClick(object sender, RoutedEventArgs e)
         {
-            _currentExecutable.RegisterInWindows();
+            CurrentExecutable.RegisterInWindows();
+        }
+        
+        private void UnregisterButton_onClick(object sender, RoutedEventArgs e)
+        {
+            CurrentExecutable.DeregisterInWindows();
         }
     }
 }
