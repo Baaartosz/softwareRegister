@@ -18,7 +18,6 @@
           <e p="Debug" t="Include">
             <e p="App.g.cs" t="Include" />
             <e p="MainWindow.g.cs" t="Include" />
-            <e p="softwareRegister_Content.g.cs" t="Include" />
           </e>
         </e>
         <e p="packages.config" t="Include" />

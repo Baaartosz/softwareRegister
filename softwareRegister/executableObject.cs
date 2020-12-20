@@ -117,9 +117,10 @@ namespace softwareRegister
         /// <returns>false == failed, true == success</returns>
         private bool DeleteShortcut(string targetShortcutPath)
         {
+            MessageBox.Show(targetShortcutPath);
             try
             {
-                // Check if file exists with its full path    
+                // Check if file exists with its full path
                 if (!File.Exists(targetShortcutPath)) return false;
                 File.Delete(targetShortcutPath);
                 _modfiedLocations.Remove(targetShortcutPath);
@@ -143,8 +144,8 @@ namespace softwareRegister
         /// </summary>
         private readonly Environment.SpecialFolder[] _folders =
         {
-            Environment.SpecialFolder.Startup,
-            Environment.SpecialFolder.CommonStartMenu
+            // Currently Limited to Startup due to removal errors in other locations.
+            Environment.SpecialFolder.Startup
         };
 
         public void RegisterInWindows()
@@ -163,6 +164,10 @@ namespace softwareRegister
             }
         }
 
+        // This function is not removing shortcuts correctly. Leaving a mess tbf
+        // Remove function does not work in area other than startup.
+        //     OR
+        // Remove function MAY remove the shortcuts but fails to update the appdata file?
         public void DeregisterInWindows()
         {
             _isRegistered = false;
