@@ -18,6 +18,7 @@
           <e p="Debug" t="Include">
             <e p="App.g.cs" t="Include" />
             <e p="MainWindow.g.cs" t="Include" />
+            <e p="softwareRegister_Content.g.cs" t="Include" />
           </e>
         </e>
         <e p="packages.config" t="Include" />
@@ -28,6 +29,11 @@
           <e p="Resources.resx" t="Include" />
         </e>
         <e p="softwareRegister.csproj" t="IncludeRecursive" />
+        <e p="Themes" t="Include">
+          <e p="LeftMarginMultiplierConverter.cs" t="Include" />
+          <e p="Styles.xaml" t="Include" />
+          <e p="TreeViewItemExtensions.cs" t="Include" />
+        </e>
       </e>
       <e p="softwareRegister.sln" t="IncludeFlat" />
     </e>

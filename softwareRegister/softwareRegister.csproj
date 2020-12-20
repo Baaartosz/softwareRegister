@@ -89,6 +89,8 @@
             <SubType>Designer</SubType>
         </ApplicationDefinition>
         <Compile Include="executableObject.cs" />
+        <Compile Include="Themes\LeftMarginMultiplierConverter.cs" />
+        <Compile Include="Themes\TreeViewItemExtensions.cs" />
         <Page Include="MainWindow.xaml">
             <Generator>MSBuild:Compile</Generator>
             <SubType>Designer</SubType>
@@ -141,6 +143,9 @@
         <Isolated>False</Isolated>
         <EmbedInteropTypes>True</EmbedInteropTypes>
       </COMReference>
+    </ItemGroup>
+    <ItemGroup>
+      <Content Include="Themes\Styles.xaml" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
