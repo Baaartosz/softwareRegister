@@ -24,6 +24,7 @@ namespace softwareRegister
         private readonly string _dataFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), SoftwareFolderName);
         private List<string> _modfiedLocations = new List<string>();
 
+        
         /// <summary>
         /// Constructor, set the executablePath and fileName
         /// </summary>
