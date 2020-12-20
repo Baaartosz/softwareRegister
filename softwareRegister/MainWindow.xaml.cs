@@ -33,11 +33,11 @@ namespace softwareRegister
         
         private void Button_OnClick(object sender, RoutedEventArgs e)
         {
-            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
-            openFileDialog.DefaultExt = ".exe";
-            openFileDialog.Filter = "Exe Files (.exe)|*.exe|All Files (*.*)|*.*";
-            openFileDialog.FilterIndex = 1;
-            
+            var openFileDialog = new Microsoft.Win32.OpenFileDialog
+            {
+                DefaultExt = ".exe", Filter = "Exe Files (.exe)|*.exe|All Files (*.*)|*.*", FilterIndex = 1
+            };
+
             // Display OpenFileDialog by calling ShowDialog method 
             var result = openFileDialog.ShowDialog();
             

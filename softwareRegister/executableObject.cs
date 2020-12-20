@@ -8,10 +8,6 @@ using System.Text.Json;
 using System.Windows;
 using File = System.IO.File;
 
-// okay so rewrite the code to create a object that contains
-// the executable data and creates a shortcut instead of modifying the registry
-// it creates shortscuts to the exe in the right places for windows to search.
-// also look into %Appdata%
 namespace softwareRegister
 {
     /// <summary>
@@ -21,35 +17,12 @@ namespace softwareRegister
     /// </summary>
     public class ExecutableObject
     {
-        // Note to self
-        // ---
-        // create a custom json file / class array custom that holds all the history of
-        // that desktop and changes it made to the Windows Registry.
-        // EDIT - that will go to %programdata%
         private string _executablePath;
         private string _fileName;
         private bool _isRegistered = false;
-        private string _softwareFolderName = "SoftwareReg";
-        private static string _dataFolderPath;
+        private const string SoftwareFolderName = "SoftwareReg";
+        private readonly string _dataFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), SoftwareFolderName);
         private List<string> _modfiedLocations = new List<string>();
-        
-        /// <summary>
-        /// Uses a ?? operator that basically means that it will try to get the
-        /// primary property and if it returns null then it will use the backup
-        /// property which is "Object name unset".
-        ///
-        /// => (primary) ?? (backup);
-        ///
-        /// In reality this should never be null.
-        /// </summary>
-        /// <returns>String executablePath</returns>
-        private string GetObjectExecutableLocation() => _executablePath ?? "Executable location unset.";
-
-        //private string GetExecutableFileName() => _fileName ?? "Executable name unset";
-
-        private bool GetIfRegistered() => _isRegistered;
-
-        private List<string> GetModfiedLocations() => _modfiedLocations;
 
         /// <summary>
         /// Constructor, set the executablePath and fileName
@@ -60,22 +33,24 @@ namespace softwareRegister
         {
             _executablePath = executablePath;
             _fileName = fileName;
-            _dataFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), _softwareFolderName);
-            MessageBox.Show(_dataFolderPath);
-            Directory.CreateDirectory(_dataFolderPath);
-            //NOTE TO SELF
-            // Create a sepererate constructor for attmpting to find if it already exsists if not create new object.
+            
+            if (Directory.Exists(_dataFolderPath)) GetSaveFromAppdata();
+            if(_dataFolderPath != null && !Directory.Exists(_dataFolderPath))
+                Directory.CreateDirectory(_dataFolderPath);
+            
+            MessageBox.Show(Privilege.IsElevated
+                ? "Admin : True"
+                : "Admin : False");
         }
-
-        // This can be tracked based upon development of the JSON file class to be made.
+        
         private void SaveToAppdata()
         {
             var exeObject = new ExeObjectSeralised()
             {
                 ExecutableName = _fileName,
-                ExecutablePath = GetObjectExecutableLocation(),
-                IsRegistered = GetIfRegistered(),
-                ModfiedLocations = GetModfiedLocations(),
+                ExecutablePath = _executablePath,
+                IsRegistered = _isRegistered, // todo bug wrong spelling 'ModifiedLocations' instead.
+                ModfiedLocations = _modfiedLocations,
                 TimeMade = DateTime.Now
             };
 
@@ -169,7 +144,7 @@ namespace softwareRegister
         private readonly Environment.SpecialFolder[] _folders =
         {
             Environment.SpecialFolder.Startup,
-            Environment.SpecialFolder.StartMenu
+            Environment.SpecialFolder.CommonStartMenu
         };
 
         public void RegisterInWindows()
@@ -190,8 +165,7 @@ namespace softwareRegister
 
         public void DeregisterInWindows()
         {
-            // Add a way to update the locations array before proceeding with the 
-            // Foreach String in 'ModifiedLocations' Delete all.
+            _isRegistered = false;
             GetSaveFromAppdata();
             MessageBox.Show(_modfiedLocations.Where(DeleteShortcut).Any()
                 ? $"Operation successful : {_fileName}"
