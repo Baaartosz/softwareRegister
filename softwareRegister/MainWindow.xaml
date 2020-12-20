@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:softwareRegister"
         mc:Ignorable="d"
-        Style="{StaticResource {x:Type Window}}"
         Title="softwareRegister" Height="150" Width="700">
     <Grid>
         <!-- add a theme to the application -->
