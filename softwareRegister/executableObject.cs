@@ -67,6 +67,7 @@ namespace softwareRegister
             var currentJson = File.ReadAllText(_dataFolderPath + "\\" + _fileName + ".sr");
             var executableObject = JsonSerializer.Deserialize<ExeObjectSeralised>(currentJson);
 
+            // Check current date is newer then old file date.
             if (executableObject == null || DateTime.Compare(DateTime.Now, executableObject.TimeMade) < 0) return;
             _fileName = executableObject.ExecutableName;
             _executablePath = executableObject.ExecutablePath;
@@ -97,11 +98,8 @@ namespace softwareRegister
                         _isRegistered = true;
                         SaveToAppdata();
                     }
-                }
-                if (_isRegistered)
-                {
-                    return true;
-                }
+                } else if (_isRegistered) return true;
+               
             }
             catch (Exception e)
             {
@@ -132,7 +130,16 @@ namespace softwareRegister
 
                 MessageBox.Show("Shortcut to delete doesnt exist.");
                 _modfiedLocations.Remove(targetShortcutPath);
-                SaveToAppdata(); // TODO check if _modifedLocations is empty if it is run the cleanup function.
+                if (_modfiedLocations.Count == 0)
+                {
+                    CleanUp();
+                    // TODO check if _modifiedLocations is empty if it is run the cleanup function.
+                }
+                else
+                {
+                    SaveToAppdata();
+                }
+
                 return false;
             }
             // Should really be catching and finding what the exception is and address it 
@@ -144,7 +151,7 @@ namespace softwareRegister
             }
         }
 
-        // TODO
+        // TODO low new features
         // Needs to accept dynamic changes in the user interface from the
         // tick boxes of possible places.
         
@@ -157,7 +164,7 @@ namespace softwareRegister
             Environment.SpecialFolder.Startup
         };
 
-        public void RegisterInWindows()
+        public void RegisterInWindows() // works as far as I know more problems with remove.
         {
             // Go through a array and add the shortcut to those folders.
             foreach (var f in _folders)
