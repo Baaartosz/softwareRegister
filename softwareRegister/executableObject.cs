@@ -37,7 +37,7 @@ namespace softwareRegister
             if (Directory.Exists(_dataFolderPath)) GetSaveFromAppdata();
             if(_dataFolderPath != null && !Directory.Exists(_dataFolderPath))
                 Directory.CreateDirectory(_dataFolderPath);
-            
+
             MessageBox.Show(Privilege.IsElevated
                 ? "Admin : True"
                 : "Admin : False");
@@ -202,7 +202,15 @@ namespace softwareRegister
         /// </summary>
         private void CleanUp()
         {
-            
+            // Potential Cleanup Code.
+            // if (Directory.GetFiles(dirPath, "*.sr").Length == 0)
+            // {
+            //     //NO matching *.wma files
+            // }
+            // else
+            // {
+            //     //has matching *.wma files
+            // }
         }
         
     }
