@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Media;
@@ -44,7 +45,6 @@ namespace softwareRegister
             // Get the selected file name and display in a TextBox 
             if (result == true)
             {
-                
                 // Open document 
                 var filename = openFileDialog.FileName;
                 FilenameDisplay.Content = filename;
