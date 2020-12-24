@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace softwareRegister
 {
-    public class ExeObjectSeralised
+    public class ExeObject
     {
-        public List<string> ModfiedLocations { get; set; }
+        public List<string> ModifiedLocations { get; set; }
         public string ExecutableName { get; set; }
         public string ExecutablePath { get; set; }
         public bool IsRegistered { get; set; }

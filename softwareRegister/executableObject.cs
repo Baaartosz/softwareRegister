@@ -21,7 +21,7 @@ namespace softwareRegister
         private bool _isRegistered = false;
         private const string SoftwareFolderName = "SoftwareReg";
         private readonly string _dataFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), SoftwareFolderName);
-        private List<string> _modfiedLocations = new List<string>();
+        private List<string> _modifiedLocations = new List<string>();
 
         
         /// <summary>
@@ -45,12 +45,12 @@ namespace softwareRegister
         
         private void SaveToAppdata()
         {
-            var exeObject = new ExeObjectSeralised()
+            var exeObject = new ExeObject()
             {
                 ExecutableName = _fileName,
                 ExecutablePath = _executablePath,
                 IsRegistered = _isRegistered, 
-                ModfiedLocations = _modfiedLocations, // todo final bug wrong spelling 'ModifiedLocations' instead.
+                ModifiedLocations = _modifiedLocations,
                 TimeMade = DateTime.Now
             };
 
@@ -65,14 +65,14 @@ namespace softwareRegister
         private void GetSaveFromAppdata()
         {
             var currentJson = File.ReadAllText(_dataFolderPath + "\\" + _fileName + ".sr");
-            var executableObject = JsonSerializer.Deserialize<ExeObjectSeralised>(currentJson);
+            var executableObject = JsonSerializer.Deserialize<ExeObject>(currentJson);
 
             // Check current date is newer then old file date.
             if (executableObject == null || DateTime.Compare(DateTime.Now, executableObject.TimeMade) < 0) return;
             _fileName = executableObject.ExecutableName;
             _executablePath = executableObject.ExecutablePath;
             _isRegistered = executableObject.IsRegistered;
-            _modfiedLocations = executableObject.ModfiedLocations;
+            _modifiedLocations = executableObject.ModifiedLocations;
         }
 
 
@@ -124,13 +124,13 @@ namespace softwareRegister
                 {
                     MessageBox.Show("Shortcut to exists.");
                     File.Delete(targetShortcutPath);
-                    _modfiedLocations.Remove(targetShortcutPath);
+                    _modifiedLocations.Remove(targetShortcutPath);
                     return true;
                 }
 
                 MessageBox.Show("Shortcut to delete doesnt exist.");
-                _modfiedLocations.Remove(targetShortcutPath);
-                if (_modfiedLocations.Count == 0)
+                _modifiedLocations.Remove(targetShortcutPath);
+                if (_modifiedLocations.Count == 0)
                 {
                     CleanUp();
                     // TODO check if _modifiedLocations is empty if it is run the cleanup function.
@@ -172,7 +172,7 @@ namespace softwareRegister
                 if (CreateShortcut(f, _executablePath))
                 {
                     var finalLocation = Environment.GetFolderPath(f) + "\\" + _fileName + ".lnk";
-                    _modfiedLocations.Add(finalLocation);
+                    _modifiedLocations.Add(finalLocation);
                     _isRegistered = true;
                     MessageBox.Show($"Operation successful on {_fileName}");
                 } else
@@ -189,8 +189,8 @@ namespace softwareRegister
         {
             _isRegistered = false;
             GetSaveFromAppdata();
-            foreach (var modfiedLocation in _modfiedLocations) MessageBox.Show(modfiedLocation);
-            foreach (string location in _modfiedLocations)
+            foreach (var modfiedLocation in _modifiedLocations) MessageBox.Show(modfiedLocation);
+            foreach (string location in _modifiedLocations)
             {
                 MessageBox.Show(DeleteShortcut(location)
                     ? $"Operation successful : {_fileName}"
