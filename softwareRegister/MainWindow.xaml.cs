@@ -13,12 +13,6 @@ namespace softwareRegister
     /// </summary>
     public partial class MainWindow
     {
-        enum Status
-        {
-            No = 0,
-            Yes = 1
-        }
-    
         public MainWindow()
         {
             InitializeComponent();

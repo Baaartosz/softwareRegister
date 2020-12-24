@@ -5,8 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:softwareRegister"
         mc:Ignorable="d"
-        Style="{DynamicResource FlatWindowStyle}"
-        Title="softwareRegister" Height="150" Width="700">
+        Title="softwareRegister" Height="150" Width="700"><!-- Style="{DynamicResource FlatWindowStyle}" -->
     <Grid>
         <!-- add a theme to the application -->
         <Label x:Name="FilenameDisplay" Content="hello this is a bit of text" HorizontalAlignment="Center"

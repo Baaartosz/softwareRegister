@@ -209,15 +209,14 @@ namespace softwareRegister
         /// </summary>
         private void CleanUp()
         {
-            // Potential Cleanup Code.
-            // if (Directory.GetFiles(dirPath, "*.sr").Length == 0)
-            // {
-            //     //NO matching *.wma files
-            // }
-            // else
-            // {
-            //     //has matching *.wma files
-            // }
+            if (Directory.GetFiles(_dataFolderPath, "*.sr").Length != 0)
+            {
+                // i could be wrong in doing this
+                foreach (var path in Directory.GetFiles(_dataFolderPath))
+                {
+                    File.Delete(path);
+                }
+            }
         }
         
     }
