@@ -7,12 +7,16 @@
         mc:Ignorable="d"
         Title="softwareRegister" Height="150" Width="700"><!-- Style="{DynamicResource FlatWindowStyle}" -->
     <Grid>
-        <!-- add a theme to the application -->
         <Label x:Name="FilenameDisplay" Content="hello this is a bit of text" HorizontalAlignment="Center"
                VerticalAlignment="Center" FontSize="12"></Label>
-        <Button Content="Find Executable" HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="Button_OnClick" />
-        <Button x:Name="RegBtn" Content="Register" Click="RegisterButton_onClick" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+        <Button Content="Select Executable" HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="Button_OnClick" />
+        <Button x:Name="RegBtn" IsEnabled="False" Content="Register" Click="RegisterButton_onClick" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
         <Button x:Name="DeregBtn" Content="Unregister" Click="UnregisterButton_onClick" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+        <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top">
+            <CheckBox x:Name="startupCheckBox">Run at Startup</CheckBox>
+            <CheckBox x:Name="startMenuCheckBox">Show in Start Menu</CheckBox>
+            <!-- by adding these i must check if either or if enabled before enabling the register button. -->
+        </StackPanel>
     </Grid>
 </Window>
 

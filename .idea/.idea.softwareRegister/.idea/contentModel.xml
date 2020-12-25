@@ -9,7 +9,7 @@
         <e p="App.xaml.cs" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
         <e p="executableObject.cs" t="Include" />
-        <e p="ExeObjectSeralised.cs" t="Include" />
+        <e p="ExeObject.cs" t="Include" />
         <e p="MainWindow.xaml" t="Include" />
         <e p="MainWindow.xaml.cs" t="Include" />
         <e p="obj" t="ExcludeRecursive">

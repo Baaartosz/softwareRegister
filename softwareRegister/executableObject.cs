@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using IWshRuntimeLibrary;
 using System.Text.Json;
 using System.Windows;
@@ -17,7 +18,6 @@ namespace softwareRegister
     {
         private string _executablePath;
         private string _fileName;
-        private bool _hasExe = false; // TODO _hasExe should be used to prevent unwanted crashes when no object is selected.
         private bool _isRegistered = false;
         private const string SoftwareFolderName = "SoftwareReg";
         private readonly string _dataFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), SoftwareFolderName);
@@ -33,14 +33,17 @@ namespace softwareRegister
         {
             _executablePath = executablePath;
             _fileName = fileName;
-            
-            if (Directory.Exists(_dataFolderPath)) GetSaveFromAppdata();
-            if(_dataFolderPath != null && !Directory.Exists(_dataFolderPath))
+
+            // Check if executable has all ready been registered.
+            if (Directory.Exists(_dataFolderPath)) GetSaveFromAppdata(); 
+           
+            // Check if directory is available for program.
+            if(_dataFolderPath != null && !Directory.Exists(_dataFolderPath)) 
                 Directory.CreateDirectory(_dataFolderPath);
 
-            MessageBox.Show(Privilege.IsElevated
-                ? "Admin : True"
-                : "Admin : False");
+            // MessageBox.Show(Privilege.IsElevated
+            //     ? "Admin : True"
+            //     : "Admin : False");
         }
         
         private void SaveToAppdata()
@@ -133,7 +136,6 @@ namespace softwareRegister
                 if (_modifiedLocations.Count == 0)
                 {
                     CleanUp();
-                    // TODO check if _modifiedLocations is empty if it is run the cleanup function.
                 }
                 else
                 {
@@ -161,10 +163,10 @@ namespace softwareRegister
         private readonly Environment.SpecialFolder[] _folders =
         {
             // Currently Limited to Startup due to removal errors in other locations.
-            Environment.SpecialFolder.Startup
+            Environment.SpecialFolder.StartMenu
         };
-
-        public void RegisterInWindows() // works as far as I know more problems with remove.
+ 
+        public void RegisterInWindows() 
         {
             // Go through a array and add the shortcut to those folders.
             foreach (var f in _folders)
@@ -196,23 +198,16 @@ namespace softwareRegister
                     ? $"Operation successful : {_fileName}"
                     : $"Unregistering failed on {_fileName}");
             }
-            Close();
-        }
-
-        private void Close()
-        {
-            SaveToAppdata();
         }
 
         /// <summary>
-        /// When the program finds that the program is not longer registed it will cleanup after itself.
+        /// When the program finds that the executable is not longer registed it will cleanup after itself.
         /// </summary>
         private void CleanUp()
         {
             if (Directory.GetFiles(_dataFolderPath, "*.sr").Length != 0)
             {
-                // i could be wrong in doing this
-                foreach (var path in Directory.GetFiles(_dataFolderPath))
+                foreach (var path in Directory.GetFiles(_dataFolderPath, "*.sr"))
                 {
                     File.Delete(path);
                 }
